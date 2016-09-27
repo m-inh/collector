@@ -40,6 +40,8 @@ function sendLog() {
   });
 }
 
+var log = {};
+var shopID = 1;
 var action = ["page viewed", "product searched", "collection viewed", "product viewed", "cart viewed", 
   "start checkout", "complete checkout"];
 log ["action"] = action[0];
@@ -100,7 +102,7 @@ function checkoutStepCompleted() {
 if (window.location.pathname.indexOf('/search') !== -1) {
     productSearched(); 
 } 
-	else if (window.location.pathname.indexOf('/collections/') !== -1 && 
+else if (window.location.pathname.indexOf('/collections/') !== -1 && 
   window.location.pathname.indexOf('/products/') == -1) {
   	collectionViewed(); 
 } 
