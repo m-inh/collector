@@ -46,11 +46,11 @@ log ["action"] = action[0];
 
 function productSearched() {
   log ["action"] = action[1];
-  log ["searchTerms"] = {{ search.terms | json }};
-  log ["resultCount"] = {{ search.results_count | json }};    
+  log ["searchTerms"] = search.terms;
+  log ["resultCount"] = search.results_count;    
 
   var results = [];
-  var items = {{ search.results | json }};
+  var items = search.results;
   for (var i = 0; i < items.length; i++)
   {
     results[i] = {};
@@ -61,12 +61,12 @@ function productSearched() {
 
 function collectionViewed() {
   log ["action"] = action[2];
-  log ["collectionID"] = {{ collection.id | json }};
+  log ["collectionID"] = collection.id;
 }
 
 function productViewed() {
   log ["action"] = action[3];
-  log ["productID"] = {{ product.id | json }};
+  log ["productID"] = product.id;
 }
 
 function cartViewed() {
@@ -79,12 +79,12 @@ function checkoutStepStarted() {
 
 function checkoutStepCompleted() {
   log ["action"] = action[6];
-  log["id"] = {{ checkout.id | json }};
-  log["email"] = {{ checkout.email | json }};
-  log["buyerAcceptsMarketing"] = {{ checkout.buyer_accepts_marketing | json }};
-  log["billingAddress"] = {{ checkout.billing_address | json }};
+  log["id"] = checkout.id;
+  log["email"] = checkout.email;
+  log["buyerAcceptsMarketing"] = checkout.buyer_accepts_marketing;
+  log["billingAddress"] = checkout.billing_address;
 
-  var items = {{ checkout.line_items | json }};
+  var items = checkout.line_items;
   var products = [];
   
   for (var i = 0; i < items.length; i++)
