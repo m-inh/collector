@@ -13,8 +13,8 @@ function sendLog() {
     agent["platform"] = navigator.platform;
     log ["userAgent"] = agent;
 
-    var cart = {};
-    cart ["itemCount"] = cart.item_count;
+    var cartObj = {};
+    cartObj ["itemCount"] = cart.item_count;
 
     var items = cart.items;
     var products = [];
@@ -27,10 +27,10 @@ function sendLog() {
       products[i]["quantity"] = items[i]["quantity"];
     }
 
-    cart["products"] = products;
-    cart ["totalPrice"] = cart.total_price;
-    cart ["totalWeight"] = cart.total_weight;
-    log["cart"] = cart;
+    cartObj["products"] = products;
+    cartObj ["totalPrice"] = cart.total_price;
+    cartObj ["totalWeight"] = cart.total_weight;
+    log["cart"] = cartObj;
 
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "https://shopify.mytools.io/demo", true);
