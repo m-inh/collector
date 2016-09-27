@@ -14,9 +14,9 @@ function sendLog() {
     log ["userAgent"] = agent;
 
     var cart = {};
-    cart ["itemCount"] = {{ cart.item_count | json }};
+    cart ["itemCount"] = cart.item_count;
 
-    var items = {{ cart.items | json }};
+    var items = cart.items;
     var products = [];
     
     for (var i = 0; i < items.length; i++)
@@ -28,8 +28,8 @@ function sendLog() {
     }
 
     cart["products"] = products;
-    cart ["totalPrice"] = {{ cart.total_price | json }};
-    cart ["totalWeight"] = {{ cart.total_weight | json }};
+    cart ["totalPrice"] = cart.total_price;
+    cart ["totalWeight"] = cart.total_weight;
     log["cart"] = cart;
 
     var xhttp = new XMLHttpRequest();
