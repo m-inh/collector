@@ -13,45 +13,53 @@ function sendLog() {
     agent["platform"] = navigator.platform;
     log ["user_agent"] = agent;
 
-    jQuery.ajax({
-      method: 'GET',
-      dataType: 'json',
-      url: '/cart.js',
-      success: function(data) {
-        if (data.token != null) {
-          var cart = {};
-          cart ["item_count"] = data.item_count;
+    if (log ["event"] != action[3]) {
+      jQuery.ajax({
+        method: 'GET',
+        dataType: 'json',
+        url: '/cart.js',
+        success: function(data) {
+          if (data.token != null) {
+            var cart = {};
+            cart ["item_count"] = data.item_count;
 
-          var items = data.items;
-          var products = [];
-          
-          for (var i = 0; i < items.length; i++)
-          {
-            products[i] = {};
-            products[i]["product_id"] = items[i]["product_id"];
-            products[i]["variant_id"] = items[i]["variant_id"];
-            products[i]["quantity"] = items[i]["quantity"];
+            var items = data.items;
+            var products = [];
+            
+            for (var i = 0; i < items.length; i++)
+            {
+              products[i] = {};
+              products[i]["product_id"] = items[i]["product_id"];
+              products[i]["variant_id"] = items[i]["variant_id"];
+              products[i]["quantity"] = items[i]["quantity"];
+            }
+
+            cart["items"] = products;
+            cart ["total_price"] = data.total_price;
+            cart ["total_weight"] = data.total_weight;
+            log["cart"] = cart;
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "https://shopify.mytools.io/demo", true);
+            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            var str = "json=";
+            xhttp.send(str.concat(JSON.stringify(log)));
           }
-
-          cart["items"] = products;
-          cart ["total_price"] = data.total_price;
-          cart ["total_weight"] = data.total_weight;
-          log["cart"] = cart;
-
-          var xhttp = new XMLHttpRequest();
-          xhttp.open("POST", "https://shopify.mytools.io/demo", true);
-          xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-          var str = "json=";
-          xhttp.send(str.concat(JSON.stringify(log)));
         }
-      }
-    });
+      });
+    } else {
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("POST", "https://shopify.mytools.io/demo", true);
+      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      var str = "json=";
+      xhttp.send(str.concat(JSON.stringify(log)));
+    }
   });
 }
 
 var log = {};
 var shop_id = 1;
-var action = ["page_view", "product_view", "cart_view", "checkout_start", "checkout_complete"];
+var action = ["page_view", "product_view", "cart_view", "checkout_complete"];
 log ["event"] = action[0];
 
 function productView() {
@@ -75,13 +83,8 @@ function cartView() {
   sendLog();
 }
 
-function checkoutStart() {
-  log ["event"] = action[3];
-  sendLog();
-}
-
 function checkoutComplete() {
-  log ["event"] = action[4];
+  log ["event"] = action[3];
   log ["order_id"] = Shopify.checkout.order_id;
   log ["customer_id"] = Shopify.checkout.customer_id;
   log ["customer_email"] = Shopify.checkout.email;
@@ -108,10 +111,6 @@ function sendLogData() {
   else if (window.location.pathname.indexOf('/cart') !== -1) {
       cartView(); 
   }  
-  else if (window.location.pathname.indexOf('/checkouts/') !== -1 
-    && Shopify.Checkout.step == "payment_method") {
-      checkoutStart(); 
-  }
   else if (window.location.pathname.indexOf('/checkouts/') !== -1 
     && Shopify.Checkout.step == "thank_you") {
       checkoutComplete();
