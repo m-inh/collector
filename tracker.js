@@ -55,7 +55,6 @@ var event = ["page_view", "product_view", "cart_view", "checkout_start", "checko
 log ["event"] = event[0];
 
 function productViewed() {
-  log ["event"] = event[1];
   var productHandle = window.location.pathname.match(/\/products\/([a-z0-9-]+)/)[1];
   jQuery.ajax({
     method: 'GET',
@@ -64,6 +63,7 @@ function productViewed() {
     success: function(data) {
       if (data.id != null) {
         log ["product_id"] = data.id.toString();
+        log ["event"] = event[1];
         sendLog();
       }
     }
