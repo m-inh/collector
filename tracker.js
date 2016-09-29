@@ -156,7 +156,4 @@ function initJQuery() {
     }
 }
 
-var delay = 2000;
-setTimeout(function() {
-  initJQuery();
-}, delay);
+initJQuery();
