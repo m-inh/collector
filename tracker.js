@@ -1,60 +1,78 @@
-function sendLog() {
-  new Fingerprint2().get(function(result) {
-    log ["shop_id"] = shop_id;
-    log ["browser_id"] = result;
-    log ["timestamp"] = Math.round(new Date().getTime()/1000)
-    log ["url"] = window.location.href;
-    var agent = {};
-    var browser_version = navigator.appVersion;
-    browser_version = browser_version.replace(';', ' ');
-    agent["browser_version"] = browser_version;
-    agent["cookie_enabled"] = navigator.cookieEnabled;
-    agent["browser_language"] = navigator.language;
-    agent["platform"] = navigator.platform;
-    log ["user_agent"] = agent;
-
-    if (log ["event"] != action[3]) {
-      jQuery.ajax({
-        method: 'GET',
-        dataType: 'json',
-        url: '/cart.js',
-        success: function(data) {
-          if (data.token != null) {
-            var cart = {};
-            cart ["item_count"] = data.item_count;
-
-            var items = data.items;
-            var products = [];
-            
-            for (var i = 0; i < items.length; i++)
-            {
-              products[i] = {};
-              products[i]["product_id"] = items[i]["product_id"];
-              products[i]["variant_id"] = items[i]["variant_id"];
-              products[i]["quantity"] = items[i]["quantity"];
-            }
-
-            cart["items"] = products;
-            cart ["total_price"] = data.total_price;
-            cart ["total_weight"] = data.total_weight;
-            log["cart"] = cart;
-
-            var xhttp = new XMLHttpRequest();
-            xhttp.open("POST", "https://shopify.mytools.io/demo", true);
-            xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            var str = "json=";
-            xhttp.send(str.concat(JSON.stringify(log)));
-          }
-        }
-      });
-    } else {
-      var xhttp = new XMLHttpRequest();
-      xhttp.open("POST", "https://shopify.mytools.io/demo", true);
-      xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-      var str = "json=";
-      xhttp.send(str.concat(JSON.stringify(log)));
+function getCookie(cname) {
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0)==' ') {
+      c = c.substring(1);
     }
-  });
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length,c.length);
+    }
+  }
+  return "";
+}
+
+function sendLog() {
+  var browser_id = getCookie("browser_id");
+  if (browser_id == "") {
+    browser_id = (Math.random()*1e64).toString(36);
+    document.cookie = "browser_id=" + browser_id + "; " + document.cookie;
+  }
+  log ["shop_id"] = shop_id;
+  log ["browser_id"] = browser_id;
+  log ["timestamp"] = Math.round(new Date().getTime()/1000)
+  log ["url"] = window.location.href;
+  var agent = {};
+  var browser_version = navigator.appVersion;
+  browser_version = browser_version.replace(';', ' ');
+  agent["browser_version"] = browser_version;
+  agent["cookie_enabled"] = navigator.cookieEnabled;
+  agent["browser_language"] = navigator.language;
+  agent["platform"] = navigator.platform;
+  log ["user_agent"] = agent;
+
+  if (log ["event"] != action[3]) {
+    jQuery.ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: '/cart.js',
+      success: function(data) {
+        if (data.token != null) {
+          var cart = {};
+          cart ["item_count"] = data.item_count;
+
+          var items = data.items;
+          var products = [];
+          
+          for (var i = 0; i < items.length; i++)
+          {
+            products[i] = {};
+            products[i]["product_id"] = items[i]["product_id"];
+            products[i]["variant_id"] = items[i]["variant_id"];
+            products[i]["quantity"] = items[i]["quantity"];
+          }
+
+          cart["items"] = products;
+          cart ["total_price"] = data.total_price;
+          cart ["total_weight"] = data.total_weight;
+          log["cart"] = cart;
+
+          var xhttp = new XMLHttpRequest();
+          xhttp.open("POST", "https://shopify.mytools.io/demo", true);
+          xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          var str = "json=";
+          xhttp.send(str.concat(JSON.stringify(log)));
+        }
+      }
+    });
+  } else {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "https://shopify.mytools.io/demo", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    var str = "json=";
+    xhttp.send(str.concat(JSON.stringify(log)));
+  }
 }
 
 var log = {};
