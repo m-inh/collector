@@ -51,10 +51,11 @@ function sendLog() {
 
 var log = {};
 var shop_id = 1;
-var event = ["page_view", "product_view", "cart_view", "checkout_start", "checkout_complete"];
-// log ["event"] = event[0];
+var action = ["page_view", "product_view", "cart_view", "checkout_start", "checkout_complete"];
+log ["event"] = action[0];
 
 function productViewed() {
+  log ["event"] = action[1];
   var productHandle = window.location.pathname.match(/\/products\/([a-z0-9-]+)/)[1];
   jQuery.ajax({
     method: 'GET',
@@ -63,7 +64,6 @@ function productViewed() {
     success: function(data) {
       if (data.id != null) {
         log ["product_id"] = data.id.toString();
-        log ["event"] = event[1];
         sendLog();
       }
     }
@@ -71,17 +71,17 @@ function productViewed() {
 }
 
 function cartViewed() {
-  log ["event"] = event[2];
+  log ["event"] = action[2];
   sendLog();
 }
 
 function checkoutStart() {
-  log ["event"] = event[3];
+  log ["event"] = action[3];
   sendLog();
 }
 
 function checkoutComplete() {
-  log ["event"] = event[4];
+  log ["event"] = action[4];
   log ["order_id"] = Shopify.checkout.order_id;
   log ["customer_id"] = Shopify.checkout.customer_id;
   log ["customer_email"] = Shopify.checkout.email;
