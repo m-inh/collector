@@ -1,126 +1,141 @@
 function sendLog() {
   new Fingerprint2().get(function(result) {
-    log ["shopID"] = shopID;
-    log ["browserID"] = result;
+    log ["shop_id"] = shop_id;
+    log ["browser_id"] = result;
     log ["timestamp"] = Math.round(new Date().getTime()/1000)
     log ["url"] = window.location.href;
     var agent = {};
-    var browserVersion = navigator.appVersion;
-    browserVersion = browserVersion.replace(';', ' ');
-    agent["browserVersion"] = browserVersion;
-    agent["cookieEnabled"] = navigator.cookieEnabled;
-    agent["browserLanguage"] = navigator.language;
+    var browser_version = navigator.appVersion;
+    browser_version = browser_version.replace(';', ' ');
+    agent["browser_version"] = browser_version;
+    agent["cookie_enabled"] = navigator.cookieEnabled;
+    agent["browser_language"] = navigator.language;
     agent["platform"] = navigator.platform;
-    log ["userAgent"] = agent;
+    log ["user_agent"] = agent;
 
-    var cartObj = {};
-    cartObj ["itemCount"] = cart.item_count;
+    jQuery.ajax({
+      method: 'GET',
+      dataType: 'json',
+      url: '/cart.js',
+      success: function(data) {
+        if (data.token != null) {
+          var cart = {};
+          cart ["item_count"] = data.item_count;
 
-    var items = cart.items;
-    var products = [];
-    
-    for (var i = 0; i < items.length; i++)
-    {
-      products[i] = {};
-      products[i]["productID"] = items[i]["product_id"];
-      products[i]["variantID"] = items[i]["variant_id"];
-      products[i]["quantity"] = items[i]["quantity"];
-    }
+          var items = data.items;
+          var products = [];
+          
+          for (var i = 0; i < items.length; i++)
+          {
+            products[i] = {};
+            products[i]["product_id"] = items[i]["product_id"];
+            products[i]["variant_id"] = items[i]["variant_id"];
+            products[i]["quantity"] = items[i]["quantity"];
+          }
 
-    cartObj["products"] = products;
-    cartObj ["totalPrice"] = cart.total_price;
-    cartObj ["totalWeight"] = cart.total_weight;
-    log["cart"] = cartObj;
+          cart["items"] = products;
+          cart ["total_price"] = data.total_price;
+          cart ["total_weight"] = data.total_weight;
+          log["cart"] = cart;
 
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "https://shopify.mytools.io/demo", true);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    var str = "json=";
-    xhttp.send(str.concat(JSON.stringify(log)));
+          var xhttp = new XMLHttpRequest();
+          xhttp.open("POST", "https://shopify.mytools.io/demo", true);
+          xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          var str = "json=";
+          xhttp.send(str.concat(JSON.stringify(log)));
+        }
+      }
+    });
   });
 }
 
 var log = {};
-var shopID = 1;
-var action = ["page viewed", "product searched", "collection viewed", "product viewed", "cart viewed", 
-  "start checkout", "complete checkout"];
-log ["action"] = action[0];
-
-function productSearched() {
-  log ["action"] = action[1];
-  log ["searchTerms"] = search.terms;
-  log ["resultCount"] = search.results_count;    
-
-  var results = [];
-  var items = search.results;
-  for (var i = 0; i < items.length; i++)
-  {
-    results[i] = {};
-    results[i]["id"] = items[i]["id"];
-  }
-  log["results"] = results;
-}
-
-function collectionViewed() {
-  log ["action"] = action[2];
-  log ["collectionID"] = collection.id;
-}
+var shop_id = 1;
+var event = ["page_view", "product_view", "cart_view", "checkout_start", "checkout_complete"];
+log ["event"] = event[0];
 
 function productViewed() {
-  log ["action"] = action[3];
-  log ["productID"] = product.id;
+  log ["event"] = event[1];
+  var productHandle = window.location.pathname.match(/\/products\/([a-z0-9-]+)/)[1];
+  jQuery.ajax({
+    method: 'GET',
+    dataType: 'json',
+    url: '/products/' + productHandle + '.js',
+    success: function(data) {
+      if (data.id != null) {
+        log ["product_id"] = data.id.toString();
+        sendLog();
+      }
+    }
+  });
 }
 
 function cartViewed() {
-  log ["action"] = action[4];
+  log ["event"] = event[2];
+  sendLog();
 }
 
-function checkoutStepStarted() {
-  log ["action"] = action[5];
+function checkoutStart() {
+  log ["event"] = event[3];
+  sendLog();
 }
 
-function checkoutStepCompleted() {
-  log ["action"] = action[6];
-  log["id"] = checkout.id;
-  log["email"] = checkout.email;
-  log["buyerAcceptsMarketing"] = checkout.buyer_accepts_marketing;
-  log["billingAddress"] = checkout.billing_address;
+function checkoutComplete() {
+  log ["event"] = event[4];
+  log ["order_id"] = Shopify.checkout.order_id;
+  log ["customer_id"] = Shopify.checkout.customer_id;
+  log ["customer_email"] = Shopify.checkout.email;
+  log ["currency"] = Shopify.checkout.currency;
 
-  var items = checkout.line_items;
+  var items = Shopify.checkout.line_items;
   var products = [];
   
   for (var i = 0; i < items.length; i++)
   {
     products[i] = {};
-    products[i]["productID"] = items[i]["product_id"];
-    products[i]["variantID"] = items[i]["variant_id"];
+    products[i]["product_id"] = items[i]["product_id"];
+    products[i]["variant_id"] = items[i]["variant_id"];
     products[i]["quantity"] = items[i]["quantity"];
   }
   log["items"] = products;
+  sendLog();
 }
 
-if (window.location.pathname.indexOf('/search') !== -1) {
-    productSearched(); 
-} 
-else if (window.location.pathname.indexOf('/collections/') !== -1 && 
-  window.location.pathname.indexOf('/products/') == -1) {
-  	collectionViewed(); 
-} 
-else if (window.location.pathname.indexOf('/products/') !== -1) {
-    productViewed(); 
-}  
-else if (window.location.pathname.indexOf('/cart') !== -1) {
-    cartViewed(); 
-}  
-else if (window.location.pathname.indexOf('/checkouts/') !== -1 
-  && window.location.pathname.indexOf('/thank_you') == -1
-  && window.location.pathname.indexOf('step') == -1) {
-    checkoutStepStarted(); 
-}
-else if (window.location.pathname.indexOf('/checkouts/') !== -1 
-  && window.location.pathname.indexOf('/thank_you') !== -1) {
-    checkoutStepCompleted();
+function sendLogData() {
+  if (window.location.pathname.indexOf('/products/') !== -1) {
+      productViewed(); 
+  }  
+  else if (window.location.pathname.indexOf('/cart') !== -1) {
+      cartViewed(); 
+  }  
+  else if (window.location.pathname.indexOf('/checkouts/') !== -1 
+    && Shopify.Checkout.step == "payment_method" {
+      checkoutStepStarted(); 
+  }
+  else if (window.location.pathname.indexOf('/checkouts/') !== -1 
+    && Shopify.Checkout.step == "thank_you" {
+      checkoutStepCompleted();
+  }
+  else {
+    sendLog();
+  }  
 }
 
-sendLog();
+var jqPending = false;
 
+function initJQuery() {
+    if (typeof(jQuery) == 'undefined') {
+        if (!jqPending) {
+            jqPending = true;
+            var s = document.createElement('script');
+            s.src = '//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js';
+            document.head.appendChild(s);
+        }
+        setTimeout(initJQuery, 50);
+    } else {
+        jQuery(function() {
+            sendLogData();
+        });
+    }
+}
+initJQuery();
