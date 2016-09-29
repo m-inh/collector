@@ -110,7 +110,7 @@ function sendLogData() {
   }  
   else if (window.location.pathname.indexOf('/checkouts/') !== -1 
     && Shopify.Checkout.step == "payment_method") {
-      checkoutStepStart(); 
+      checkoutStart(); 
   }
   else if (window.location.pathname.indexOf('/checkouts/') !== -1 
     && Shopify.Checkout.step == "thank_you") {
