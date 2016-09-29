@@ -17,7 +17,7 @@ function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
+    document.cookie = cname + "=" + cvalue + "; " + expires + "; path=/"; 
 }
 
 function sendLog() {
@@ -28,7 +28,7 @@ function sendLog() {
   }
   log ["shop_id"] = shop_id;
   log ["browser_id"] = browser_id;
-  log ["timestamp"] = Math.round(new Date().getTime()/1000)
+  log ["timestamp"] = Math.round(new Date().getTime())
   log ["url"] = window.location.href;
   var agent = {};
   var browser_version = navigator.appVersion;
