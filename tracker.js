@@ -109,7 +109,7 @@ function sendLogData() {
       cartViewed(); 
   }  
   else if (window.location.pathname.indexOf('/checkouts/') !== -1 
-    && Shopify.Checkout.step == "payment_method" {
+    && Shopify.Checkout.step == "payment_method") {
       checkoutStepStarted(); 
   }
   else if (window.location.pathname.indexOf('/checkouts/') !== -1 
