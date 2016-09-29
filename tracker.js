@@ -113,7 +113,7 @@ function sendLogData() {
       checkoutStepStarted(); 
   }
   else if (window.location.pathname.indexOf('/checkouts/') !== -1 
-    && Shopify.Checkout.step == "thank_you" {
+    && Shopify.Checkout.step == "thank_you") {
       checkoutStepCompleted();
   }
   else {
