@@ -114,7 +114,7 @@ function sendLogData() {
   }
   else if (window.location.pathname.indexOf('/checkouts/') !== -1 
     && Shopify.Checkout.step == "thank_you") {
-      checkoutStepComplete();
+      checkoutComplete();
   }
   else {
     sendLog();
