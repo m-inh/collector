@@ -54,7 +54,7 @@ var shop_id = 1;
 var action = ["page_view", "product_view", "cart_view", "checkout_start", "checkout_complete"];
 log ["event"] = action[0];
 
-function productViewed() {
+function productView() {
   log ["event"] = action[1];
   var productHandle = window.location.pathname.match(/\/products\/([a-z0-9-]+)/)[1];
   jQuery.ajax({
@@ -70,7 +70,7 @@ function productViewed() {
   });
 }
 
-function cartViewed() {
+function cartView() {
   log ["event"] = action[2];
   sendLog();
 }
@@ -103,18 +103,18 @@ function checkoutComplete() {
 
 function sendLogData() {
   if (window.location.pathname.indexOf('/products/') !== -1) {
-      productViewed(); 
+      productView(); 
   }  
   else if (window.location.pathname.indexOf('/cart') !== -1) {
-      cartViewed(); 
+      cartView(); 
   }  
   else if (window.location.pathname.indexOf('/checkouts/') !== -1 
     && Shopify.Checkout.step == "payment_method") {
-      checkoutStepStarted(); 
+      checkoutStepStart(); 
   }
   else if (window.location.pathname.indexOf('/checkouts/') !== -1 
     && Shopify.Checkout.step == "thank_you") {
-      checkoutStepCompleted();
+      checkoutStepComplete();
   }
   else {
     sendLog();
@@ -138,4 +138,8 @@ function initJQuery() {
         });
     }
 }
-initJQuery();
+
+var delay = 500;
+setTimeout(function() {
+  initJQuery();
+}, delay);
