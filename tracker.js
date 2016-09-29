@@ -13,11 +13,18 @@ function getCookie(cname) {
   return "";
 }
 
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
 function sendLog() {
   var browser_id = getCookie("browser_id");
   if (browser_id == "") {
     browser_id = (Math.random()*1e64).toString(36);
-    document.cookie = "browser_id=" + browser_id + "; " + document.cookie;
+    setCookie("browser_id", browser_id, 365);
   }
   log ["shop_id"] = shop_id;
   log ["browser_id"] = browser_id;
