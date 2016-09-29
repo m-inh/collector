@@ -52,7 +52,7 @@ function sendLog() {
 var log = {};
 var shop_id = 1;
 var event = ["page_view", "product_view", "cart_view", "checkout_start", "checkout_complete"];
-log ["event"] = event[0];
+// log ["event"] = event[0];
 
 function productViewed() {
   var productHandle = window.location.pathname.match(/\/products\/([a-z0-9-]+)/)[1];
