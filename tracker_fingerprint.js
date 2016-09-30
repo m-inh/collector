@@ -59,7 +59,7 @@ function sendLog() {
 
 var log = {};
 var shop_id = 1;
-var action = ["page_view", "product_view", "cart_view", "checkout_complete"];
+var action = ["page_view", "product_view", "cart_view", "checkout_complete", "add_to_cart"];
 log ["event"] = action[0];
 
 function productView() {
@@ -76,6 +76,12 @@ function productView() {
       }
     }
   });
+}
+
+function addToCart() {
+  log ["event"] = action[4];
+  log ["product_id"] = window.ShopifyAnalytics.meta.product.id;  
+  sendLog();
 }
 
 function cartView() {
@@ -132,9 +138,15 @@ function initJQuery() {
         }
         setTimeout(initJQuery, 50);
     } else {
-        jQuery(function() {
-            sendLogData();
-        });
+      jQuery(function() {
+        for (i = 0; i < document.forms.length; i++){
+          var a = document.forms[i].getAttribute("action");
+          if (a && a.indexOf("/cart/add") >= 0) {
+            document.forms[i].addEventListener("submit", addToCart, false);
+          }
+        }
+        sendLogData();
+      });
     }
 }
 
