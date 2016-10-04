@@ -81,8 +81,13 @@ function productView() {
 function addToCart(ev) {
   ev.preventDefault();
   console.log("add to cart");
+  var e = ev.target || ev.srcElement;
+  var quant = e.quantity ? e.quantity.value : 1;
   log ["event"] = action[4];
-  log ["product_id"] = window.ShopifyAnalytics.meta.product.id;  
+  log ["product_id"] = window.ShopifyAnalytics.meta.product.id; 
+  log ["quantity"] = quant; 
+  log ["currency"] = window.ShopifyAnalytics.meta.currency;
+  log ["variant"] = e.id.value;
   sendLog();
 }
 
@@ -145,8 +150,11 @@ function initJQuery() {
           var a = document.forms[i].getAttribute("action");
           if (a && a.indexOf("/cart/add") >= 0) {
             console.log("found add cart form");
-            document.forms[i].addEventListener("submit", addToCart, false);
-            //document.getElementById("AddToCart").addEventListener("click", addToCart, true);
+            document.forms[i].querySelector('[type="submit"]').addEventListener('click', addToCart, false);
+            //document.forms[i].addEventListener("submit", addToCart, false);
+          } else if (a && a.indexOf("/cart") >= 0) {
+            console.log("found cart form");
+            //document.forms[i].querySelector('[href|="/cart/change"]').addEventListener('click', addToCart, false);
           }
         }
         sendLogData();
