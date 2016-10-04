@@ -145,7 +145,7 @@ function initJQuery() {
           var a = document.forms[i].getAttribute("action");
           if (a && a.indexOf("/cart/add") >= 0) {
             console.log("found add cart form");
-            document.forms[i].addEventListener("submit", addToCart, false);
+            document.forms[i].addEventListener("select", addToCart, false);
             //document.getElementById("AddToCart").addEventListener("click", addToCart, true);
           }
         }
