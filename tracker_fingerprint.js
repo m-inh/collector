@@ -80,14 +80,9 @@ function productView() {
 
 function addToCart(ev) {
   ev.preventDefault();
-  console.log(ev);
-  var e = ev.target || ev.srcElement;
-  var quant = e.quantity ? e.quantity.value : 1;
   log ["event"] = action[4];
   log ["product_id"] = window.ShopifyAnalytics.meta.product.id; 
-  log ["quantity"] = quant; 
   log ["currency"] = window.ShopifyAnalytics.meta.currency;
-  log ["variant"] = e.id.value;
   sendLog();
 }
 
