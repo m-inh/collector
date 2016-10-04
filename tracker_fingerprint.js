@@ -79,7 +79,6 @@ function productView() {
 }
 
 function addToCart() {
-  console.log("found add cart form");
   log ["event"] = action[4];
   log ["product_id"] = window.ShopifyAnalytics.meta.product.id;  
   sendLog();
@@ -143,6 +142,7 @@ function initJQuery() {
         for (i = 0; i < document.forms.length; i++){
           var a = document.forms[i].getAttribute("action");
           if (a && a.indexOf("/cart/add") >= 0) {
+            console.log("found add cart form");
             document.forms[i].addEventListener("submit", addToCart, false);
           }
         }
