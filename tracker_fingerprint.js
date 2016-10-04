@@ -168,6 +168,8 @@ function initJQuery() {
 callBack(window, "load", function() {
   for (var r = 0; r < document.forms.length; r++) {
     var i = document.forms[r].getAttribute("action");
+    if (i)
+      console.log(i);
     i && i.indexOf("/cart/add") >= 0 && callBack(document.forms[r], "submit", addToCart);
   }
 });
