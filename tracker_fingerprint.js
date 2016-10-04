@@ -79,6 +79,7 @@ function productView() {
 }
 
 function addToCart() {
+    console.log("add to cart");
   log ["event"] = action[4];
   log ["product_id"] = window.ShopifyAnalytics.meta.product.id;  
   sendLog();
