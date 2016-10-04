@@ -146,7 +146,7 @@ function initJQuery() {
           if (a && a.indexOf("/cart/add") >= 0) {
             console.log("found add cart form");
             document.forms[i].addEventListener("submit", addToCart, true);
-            document.getElementById("AddToCart").addEventListener("click", addToCart, true);
+            //document.getElementById("AddToCart").addEventListener("click", addToCart, true);
           }
         }
         sendLogData();
