@@ -78,8 +78,7 @@ function productView() {
   });
 }
 
-function addToCart(ev) {
-  console.log("add to cart");
+function addToCart() {
   log ["event"] = action[4];
   log ["product_id"] = window.ShopifyAnalytics.meta.product.id;  
   sendLog();
@@ -127,20 +126,6 @@ function sendLogData() {
   }  
 }
 
-function callBack(elem, type, handle) {
-  if (window.jQuery && window.jQuery(elem).bind) {
-    window.jQuery(elem).bind(type, handle);
-  } else {
-    if (elem.addEventListener) {
-      elem.addEventListener(type, handle);
-    } else {
-      if (elem.attachEvent) {
-        elem.attachEvent("on" + type, handle);
-      }
-    }
-  }
-}
-
 var jqPending = false;
 
 function initJQuery() {
@@ -154,24 +139,17 @@ function initJQuery() {
         setTimeout(initJQuery, 50);
     } else {
       jQuery(function() {
-        // for (i = 0; i < document.forms.length; i++){
-        //   var a = document.forms[i].getAttribute("action");
-        //   if (a && a.indexOf("/cart/add") >= 0) {
-        //     callBack(document.forms[i], "submit", addToCart);
-        //   }
-        // }
+        for (i = 0; i < document.forms.length; i++){
+          var a = document.forms[i].getAttribute("action");
+          if (a && a.indexOf("/cart/add") >= 0) {
+            console.log("found add cart form");
+            document.forms[i].addEventListener("submit", addToCart);
+          }
+        }
         sendLogData();
       });
     }
 }
-
-callBack(window, "load", function() {
-  console.log("xxx");
-  for (var r = 0; r < document.forms.length; r++) {
-    var i = document.forms[r].getAttribute("action");
-    i && i.indexOf("/cart/add") >= 0 && callBack(document.forms[r], "submit", addToCart);
-  }
-});
 
 var delay = 1000;
 setTimeout(function() {
