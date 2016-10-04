@@ -80,7 +80,7 @@ function productView() {
 
 function addToCart(ev) {
   ev.preventDefault();
-  console.log("add to cart");
+  console.log(ev);
   var e = ev.target || ev.srcElement;
   var quant = e.quantity ? e.quantity.value : 1;
   log ["event"] = action[4];
