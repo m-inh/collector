@@ -126,6 +126,20 @@ function sendLogData() {
   }  
 }
 
+function callBack(elem, type, handle) {
+  if (window.jQuery && window.jQuery(elem).bind) {
+    window.jQuery(elem).bind(type, handle);
+  } else {
+    if (elem.addEventListener) {
+      elem.addEventListener(type, handle);
+    } else {
+      if (elem.attachEvent) {
+        elem.attachEvent("on" + type, handle);
+      }
+    }
+  }
+}
+
 var jqPending = false;
 
 function initJQuery() {
@@ -142,8 +156,8 @@ function initJQuery() {
         for (i = 0; i < document.forms.length; i++){
           var a = document.forms[i].getAttribute("action");
           if (a && a.indexOf("/cart/add") >= 0) {
-            console.log("found add cart form");
-            document.forms[i].addEventListener("submit", addToCart, false);
+            //console.log("found add cart form");
+            callBack(document.forms[i], "submit", addToCart);
           }
         }
         sendLogData();
@@ -151,7 +165,7 @@ function initJQuery() {
     }
 }
 
-var delay = 2000;
+var delay = 1000;
 setTimeout(function() {
   initJQuery();
 }, delay);
