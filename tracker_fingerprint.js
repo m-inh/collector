@@ -78,7 +78,7 @@ function productView() {
   });
 }
 
-function addToCart() {
+function addToCart(ev) {
   console.log("add to cart");
   log ["event"] = action[4];
   log ["product_id"] = window.ShopifyAnalytics.meta.product.id;  
