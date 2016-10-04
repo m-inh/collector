@@ -78,8 +78,9 @@ function productView() {
   });
 }
 
-function addToCart() {
-    console.log("add to cart");
+function addToCart(ev) {
+  ev.preventDefault();
+  console.log("add to cart");
   log ["event"] = action[4];
   log ["product_id"] = window.ShopifyAnalytics.meta.product.id;  
   sendLog();
@@ -144,7 +145,8 @@ function initJQuery() {
           var a = document.forms[i].getAttribute("action");
           if (a && a.indexOf("/cart/add") >= 0) {
             console.log("found add cart form");
-            document.forms[i].addEventListener("click", addToCart, true);
+            document.forms[i].addEventListener("submit", addToCart, true);
+            document.getElementById("AddToCart").addEventListener("click", addToCart, true);
           }
         }
         sendLogData();
