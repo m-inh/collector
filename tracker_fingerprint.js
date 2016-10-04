@@ -154,16 +154,23 @@ function initJQuery() {
         setTimeout(initJQuery, 50);
     } else {
       jQuery(function() {
-        for (i = 0; i < document.forms.length; i++){
-          var a = document.forms[i].getAttribute("action");
-          if (a && a.indexOf("/cart/add") >= 0) {
-            callBack(document.forms[i], "submit", addToCart);
-          }
-        }
+        // for (i = 0; i < document.forms.length; i++){
+        //   var a = document.forms[i].getAttribute("action");
+        //   if (a && a.indexOf("/cart/add") >= 0) {
+        //     callBack(document.forms[i], "submit", addToCart);
+        //   }
+        // }
         sendLogData();
       });
     }
 }
+
+callBack(window, "load", function() {
+  for (var r = 0; r < document.forms.length; r++) {
+    var i = document.forms[r].getAttribute("action");
+    i && i.indexOf("/cart/add") >= 0 && callBack(document.forms[r], "submit", addToCart);
+  }
+});
 
 var delay = 1000;
 setTimeout(function() {
