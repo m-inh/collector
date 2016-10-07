@@ -1,5 +1,6 @@
 function sendLog() {
-  new Fingerprint2().get(function(result) {
+  var options = {excludeTimezoneOffset: true, excludeAdBlock: true, excludePlugins: true};
+  new Fingerprint2(options).get(function(result) {
     log ["shop_id"] = shop_id;
     log ["browser_id"] = result;
     log ["timestamp"] = Math.round(new Date().getTime())
@@ -79,7 +80,6 @@ function productView() {
 }
 
 function addToCart(ev) {
-  ev.preventDefault();
   log ["event"] = action[4];
   log ["product_id"] = window.ShopifyAnalytics.meta.product.id; 
   log ["currency"] = window.ShopifyAnalytics.meta.currency;
