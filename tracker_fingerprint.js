@@ -159,3 +159,5 @@ function initJQuery() {
 
 var delay = 2000;
 setTimeout(initJQuery, delay);
+
+console.log('load my source');
